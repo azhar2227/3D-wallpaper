@@ -1,122 +1,103 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
+// 3D वॉलपेपर प्रोडक्ट्स
+const products = [
+    { id: 1, name: "3D स्पेस वॉलपेपर", price: 199, img: "https://via.placeholder.com/150?text=Space+3D" },
+    { id: 2, name: "3D एब्सट्रैक्ट आर्ट", price: 249, img: "https://via.placeholder.com/150?text=Abstract+3D" },
+    { id: 3, name: "3D नेचर सीन", price: 299, img: "https://via.placeholder.com/150?text=Nature+3D" },
+    { id: 4, name: "3D साइबरपंक सिटी", price: 349, img: "https://via.placeholder.com/150?text=Cyberpunk+3D" },
+    { id: 5, name: "3D अंडरवाटर", price: 199, img: "https://via.placeholder.com/150?text=Underwater+3D" },
+    { id: 6, name: "3D मिनिमलिस्ट", price: 179, img: "https://via.placeholder.com/150?text=Minimal+3D" },
+];
 
-/* 3D वॉलपेपर बैकग्राउंड (पूरी साइट पर) */
-body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-    color: white;
-    min-height: 100vh;
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+function showSection(sectionId) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+    if (sectionId === 'products') renderProducts();
+    if (sectionId === 'cart') renderCart();
 }
 
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+function renderProducts() {
+    const grid = document.getElementById('product-grid');
+    grid.innerHTML = products.map(p => `
+        <div class="product-card">
+            <img src="${p.img}" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <p class="price">₹${p.price}</p>
+            <button onclick="addToCart(${p.id})">कार्ट में डालें</button>
+        </div>
+    `).join('');
 }
 
-/* हैडर */
-header {
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(10px);
-    display: flex; justify-content: space-between;
-    align-items: center; padding: 15px 50px;
-    position: sticky; top: 0; z-index: 100;
+function addToCart(productId) {
+    const product = products.find(p => p.id === productId);
+    const existing = cart.find(item => item.id === productId);
+    if (existing) {
+        existing.qty++;
+    } else {
+        cart.push({ ...product, qty: 1 });
+    }
+    saveCart();
+    updateCartCount();
+    alert('वॉलपेपर कार्ट में डाला गया!');
 }
-.logo { font-size: 24px; font-weight: bold; text-shadow: 0 0 10px #00ffff; }
-nav a {
-    color: white; text-decoration: none;
-    margin-left: 20px; cursor: pointer;
-    transition: 0.3s;
-}
-nav a:hover { color: #00ffff; text-shadow: 0 0 10px #00ffff; }
 
-/* सेक्शन */
-.section { display: none; padding: 40px 50px; animation: fadeIn 0.5s; }
-.section.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+function renderCart() {
+    const container = document.getElementById('cart-items');
+    const totalEl = document.getElementById('cart-total');
+    if (cart.length === 0) {
+        container.innerHTML = '<p>आपका कार्ट खाली है।</p>';
+        totalEl.innerHTML = '';
+        return;
+    }
+    container.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <span>${item.name} (x${item.qty})</span>
+            <span>₹${item.price * item.qty}</span>
+            <button onclick="removeFromCart(${item.id})">हटाएं</button>
+        </div>
+    `).join('');
+    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    totalEl.innerHTML = `कुल: ₹${total}`;
+}
 
-/* हीरो */
-.hero {
-    text-align: center; padding: 100px 20px;
-    background: rgba(255,255,255,0.1); backdrop-filter: blur(15px);
-    border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);
-    box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
+function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    saveCart();
+    renderCart();
+    updateCartCount();
 }
-.hero h1 { font-size: 40px; margin-bottom: 20px; text-shadow: 0 0 20px #ff00ff; }
-.hero button {
-    padding: 12px 30px; font-size: 18px;
-    background: linear-gradient(135deg, #00ffff, #ff00ff);
-    color: white; border: none; border-radius: 30px;
-    cursor: pointer; transition: 0.3s; box-shadow: 0 0 20px #00ffff;
-}
-.hero button:hover { transform: scale(1.1); }
 
-/* प्रोडक्ट ग्रिड */
-.product-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px; margin-top: 30px;
+function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
 }
-.product-card {
-    background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-    border-radius: 15px; padding: 20px; text-align: center;
-    border: 1px solid rgba(255,255,255,0.2);
-    transition: transform 0.3s;
-}
-.product-card:hover { transform: translateY(-10px); }
-.product-card img {
-    width: 150px; height: 150px; object-fit: cover;
-    border-radius: 10px; border: 2px solid #00ffff;
-}
-.product-card h3 { margin: 10px 0; }
-.product-card .price { color: #ff00ff; font-size: 20px; font-weight: bold; }
-.product-card button {
-    padding: 8px 20px; background: linear-gradient(135deg, #00ffff, #ff00ff);
-    color: white; border: none; border-radius: 20px; cursor: pointer;
-    margin-top: 10px; transition: 0.3s;
-}
-.product-card button:hover { box-shadow: 0 0 15px #00ffff; }
 
-/* कार्ट */
-#cart-items { margin: 20px 0; }
-.cart-item {
-    display: flex; justify-content: space-between;
-    align-items: center; background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px); padding: 15px; margin-bottom: 10px;
-    border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
+function updateCartCount() {
+    const count = cart.reduce((sum, item) => sum + item.qty, 0);
+    document.getElementById('cart-count').textContent = count;
 }
-.cart-item button {
-    background: #ff00ff; color: white;
-    border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px;
-}
-#cart-total { font-size: 22px; font-weight: bold; text-align: right; margin: 20px 0; }
-#checkout-btn {
-    padding: 12px 30px; background: linear-gradient(135deg, #00ffff, #ff00ff);
-    color: white; border: none; border-radius: 30px; cursor: pointer; font-size: 18px;
-    transition: 0.3s;
-}
-#checkout-btn:hover { box-shadow: 0 0 20px #ff00ff; }
 
-/* मोडल */
-.modal {
-    display: none; position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%; background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(5px); z-index: 1000;
+function checkout() {
+    if (cart.length === 0) {
+        alert('कार्ट खाली है!');
+        return;
+    }
+    document.getElementById('checkout-modal').style.display = 'block';
 }
-.modal-content {
-    background: rgba(255,255,255,0.1); backdrop-filter: blur(15px);
-    padding: 30px; width: 400px; margin: 100px auto;
-    border-radius: 15px; position: relative; border: 1px solid rgba(255,255,255,0.2);
-    color: white;
+
+function closeModal() {
+    document.getElementById('checkout-modal').style.display = 'none';
 }
-.modal-content input {
-    width: 100%; padding: 10px; margin: 10px 0;
-    border: none; border-radius: 8px; background: rgba(255,255,255,0.2);
-    color: white;
-}
-.modal-content button {
-    width: 100%; padding: 12px; background: linear-gradient(135deg, #00ffff, #ff00ff);
-    color: white; border: none; border-radius: 30px; cursor: pointer;
-}
-.close { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; }
+
+document.getElementById('checkout-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('🎉 ऑर्डर सफलतापूर्वक प्लेस हो गया! धन्यवाद।');
+    cart = [];
+    saveCart();
+    updateCartCount();
+    closeModal();
+    showSection('home');
+});
+
+showSection('home');
+updateCartCount();
