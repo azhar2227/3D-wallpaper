@@ -3,39 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D wallpaper - ऑनलाइन शॉपिंग</title>
+    <title>Wallpaper Hub - 3D वॉलपेपर शॉप</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- हैडर -->
     <header>
-        <div class="logo">🛒 3D wallpaper</div>
+        <div class="logo">🖼️ Wallpaper Hub</div>
         <nav>
             <a href="#" onclick="showSection('home')">होम</a>
-            <a href="#" onclick="showSection('products')">प्रोडक्ट्स</a>
+            <a href="#" onclick="showSection('products')">वॉलपेपर</a>
             <a href="#" onclick="showSection('cart')">कार्ट (<span id="cart-count">0</span>)</a>
             <a href="#" onclick="showSection('contact')">संपर्क</a>
         </nav>
     </header>
 
-    <!-- होम सेक्शन -->
     <section id="home" class="section active">
         <div class="hero">
-            <h1>3D wallpaper में आपका स्वागत है</h1>
-            <p>बेहतरीन प्रोडक्ट्स, सबसे कम कीमतों पर। अभी खरीदारी शुरू करें!</p>
-            <button onclick="showSection('products')">खरीदारी शुरू करें</button>
+            <h1>Wallpaper Hub में आपका स्वागत है</h1>
+            <p>शानदार 3D वॉलपेपर, सबसे सस्ते दामों पर। अभी अपनी स्क्रीन को नया लुक दें!</p>
+            <button onclick="showSection('products')">वॉलपेपर देखें</button>
         </div>
     </section>
 
-    <!-- प्रोडक्ट्स सेक्शन -->
     <section id="products" class="section">
-        <h2>हमारे प्रोडक्ट्स</h2>
-        <div class="product-grid" id="product-grid">
-            <!-- JavaScript से भरेगा -->
-        </div>
+        <h2>हमारे 3D वॉलपेपर</h2>
+        <div class="product-grid" id="product-grid"></div>
     </section>
 
-    <!-- कार्ट सेक्शन -->
     <section id="cart" class="section">
         <h2>आपका कार्ट</h2>
         <div id="cart-items"></div>
@@ -43,14 +37,12 @@
         <button id="checkout-btn" onclick="checkout()">चेकआउट करें</button>
     </section>
 
-    <!-- संपर्क सेक्शन -->
     <section id="contact" class="section">
         <h2>संपर्क करें</h2>
-        <p>ईमेल: support@kushalshop.com</p>
+        <p>ईमेल: support@wallpaperhub.com</p>
         <p>फ़ोन: +91-9999999999</p>
     </section>
 
-    <!-- चेकआउट मोडल -->
     <div id="checkout-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
